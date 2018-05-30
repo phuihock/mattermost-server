@@ -398,7 +398,7 @@ func (s *SqlPostStore) GetEtag(channelId string, allowFromCache bool) store.Stor
 	})
 }
 
-func (s *SqlPostStore) Delete(postId string, time int64, deletingUserID string) store.StoreChannel {
+func (s *SqlPostStore) Delete(postId string, time int64, deleteByID string) store.StoreChannel {
 	return store.Do(func(result *store.StoreResult) {
 
 		appErr := func(errMsg string) *model.AppError {
@@ -411,7 +411,7 @@ func (s *SqlPostStore) Delete(postId string, time int64, deletingUserID string) 
 			result.Err = appErr(err.Error())
 		}
 
-		post.Props["deleteBy"] = deletingUserID
+		post.Props[model.POST_PROPS_DELETE_BY] = deleteByID
 
 		_, err = s.GetMaster().Exec("UPDATE Posts SET DeleteAt = :DeleteAt, UpdateAt = :UpdateAt, Props = :Props WHERE Id = :Id OR RootId = :RootId", map[string]interface{}{"DeleteAt": time, "UpdateAt": time, "Id": postId, "RootId": postId, "Props": model.StringInterfaceToJson(post.Props)})
 		if err != nil {
