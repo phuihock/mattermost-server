@@ -992,6 +992,13 @@ func GetExplicitMentions(message string, keywords map[string][]string) *Explicit
 			isMention = true
 		}
 
+		for keyword, ids := range keywords {
+			if keyword[0] == '~' && strings.Contains(word, keyword[1:]) {
+				addMentionedUsers(ids)
+				isMention = true
+			}
+		}
+
 		return isMention
 	}
 	processText := func(text string) {

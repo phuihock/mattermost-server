@@ -425,6 +425,28 @@ func TestGetExplicitMentions(t *testing.T) {
 				ChannelMentioned: true,
 			},
 		},
+		"AsianKeywordMatchFully": {
+			Message: "番茄",
+			Keywords: map[string][]string{
+				"番茄": {id1},
+			},
+			Expected: &ExplicitMentions{
+				MentionedUserIds: map[string]bool{
+					id1: true,
+				},
+			},
+		},
+		"AsianKeywordInTheMiddle": {
+			Message: "我爱吃番茄炒饭",
+			Keywords: map[string][]string{
+				"~番茄": {id1},
+			},
+			Expected: &ExplicitMentions{
+				MentionedUserIds: map[string]bool{
+					id1: true,
+				},
+			},
+		},
 
 		// The following tests cover cases where the message mentions @user.name, so we shouldn't assume that
 		// the user might be intending to mention some @user that isn't in the channel.
